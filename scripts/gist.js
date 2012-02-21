@@ -249,15 +249,16 @@ var gist = {
             gist.user = data.user;
         }
         
-        var gistUser = window['gist-user'];
-        if(gist.user && gist.user != window.user) {
-            gistUser.innerHTML = gist.getUserHTML(gist.user);
-            gistUser.href = gist.getUserURL(gist.user);
-            gistUser.removeAttribute('aria-hidden');
-        }
-        else {
-            gistUser.setAttribute('aria-hidden', 'true');
-        }
+        // FIXME: Update for Waterbear UI
+//         var gistUser = window['gist-user'];
+//         if(gist.user && gist.user != window.user) {
+//             gistUser.innerHTML = gist.getUserHTML(gist.user);
+//             gistUser.href = gist.getUserURL(gist.user);
+//             gistUser.removeAttribute('aria-hidden');
+//         }
+//         else {
+//             gistUser.setAttribute('aria-hidden', 'true');
+//         }
         
         $$('a[data-href*="{gist-id}"]').forEach(function(a) {
             a.href = a.getAttribute('data-href').replace(/\{gist-id\}/gi, id);
