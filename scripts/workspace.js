@@ -72,6 +72,7 @@ function scripts_as_object(){
         return [];
     }   
 }
+window.scripts_as_object = scripts_as_object;
 
 function save_current_scripts(){
     show_workspace();
@@ -143,9 +144,7 @@ function restore_from_export(){
     clear_scripts();
 
     var ps = JSON.parse(script);
-    console.log(ps.scripts);
-
-    load_scripts_from_object(ps.scripts);   
+    load_scripts_from_object(JSON.parse(script).scripts);   
     }); 
 }
 

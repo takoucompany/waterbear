@@ -35,7 +35,7 @@ function xhr(o) {
     return xhr;
 }
 
-function $(expr, con) { return (con || document).querySelector(expr); }
+function $_(expr, con) { return (con || document).querySelector(expr); }
 function $$(expr, con) { return [].slice.call((con || document).querySelectorAll(expr)); }
 
 
@@ -46,7 +46,7 @@ var gist = {
             gist.oauth.callback = callback;
             
             var popup = open('https://github.com/login/oauth/authorize' + 
-                '?client_id=da931d37076424f332ef' +
+                '?client_id=40090094550284b9dfa9' +
                 '&scope=gist', 'popup', 'width=1015,height=500');
         },
         // Step 2: Get access token and store it
@@ -107,7 +107,6 @@ var gist = {
                 window.user = data;
                 
                 var login = user.login;
-                
                 currentuser.innerHTML = gist.getUserHTML(user);
                 currentuser.href = gist.getUserURL(user);
                 
@@ -145,7 +144,7 @@ var gist = {
         var id = gist.id || '',
             scripts = JSON.stringify(scripts_as_object()),
             // FIXME: Replace with Waterbear title?
-            title = Dabblet.title(cssCode);
+            title = Waterbear.title(scripts);
             
         gist.request({
             anon: options.anon,
@@ -168,7 +167,7 @@ var gist = {
                     },
                     "settings.json": {
                         // FIXME: Replace with Waterbear settings
-                        "content": JSON.stringify(Dabblet.settings.current(null, 'file'))
+                        "content": JSON.stringify(Waterbear.settings.current(null, 'file'))
                     }
                 }
             }
@@ -219,14 +218,14 @@ var gist = {
                 }
                 
                 if(scripts) {
-                    load_scripts_from_object(JSON.parse(scripts));
+                    load_scripts_from_object(JSON.parse(scripts).scripts);
                 }
                 
                 if(settings) {
                     try { settings = JSON.parse(settings.content); }
                     catch(e) { return; }
                     // FIXME: Replace with Waterbear settings
-                    Dabblet.settings.apply(settings);
+                    Waterbear.settings.apply(settings);
                 }
             }
         });
@@ -388,7 +387,7 @@ UndoManager.prototype = {
             
         if(action.action) {
             // FIXME: Replace with Waterbear actions
-            Dabblet.codeActions.call(element, action.action, {
+            Waterbear.codeActions.call(element, action.action, {
                 inverse: action.inverse,
                 start: start,
                 end: action.end,
@@ -416,7 +415,7 @@ UndoManager.prototype = {
         
         if(action.action) {
             // FIXME: Replace with Waterbear actions
-            Dabblet.codeActions.call(element, action.action, {
+            Waterbear.codeActions.call(element, action.action, {
                 inverse: !action.inverse,
                 start: start,
                 end: action.end,
@@ -432,9 +431,14 @@ UndoManager.prototype = {
     }
 };
 
-var Dabblet = {
+var Waterbear = {
+    _title: '',
     title: function(code) {
-        return (code && code.match(/^\/\*[\s\*\r\n]+(.+?)($|\*\/)/m) || [,'Untitled'])[1];
+        if (! this._title){
+            title = prompt('Title: ');
+        }
+        return this._title || 'Untitled';
+        //return (code && code.match(/^\/\*[\s\*\r\n]+(.+?)($|\*\/)/m) || [,'Untitled'])[1];
     },
     
     wipe: function() {
@@ -443,8 +447,7 @@ var Dabblet = {
                         'your saved draft.';
                         
         if(confirm(question)) {
-            localStorage.removeItem('dabblet.css');
-            localStorage.removeItem('dabblet.html');
+            localStorage.removeItem('waterbear.json');
             window.onbeforeunload = null;
             return true;
         }
@@ -463,16 +466,16 @@ var Dabblet = {
             if(style) {
                 code = code || css.textContent;
                 
-                var title = Dabblet.title(code),
+                var title = Waterbear.title(code),
                     raw = code.indexOf('{') > -1;
             
-                result.contentWindow.document.title = title + ' ✿ Dabblet result';
+                result.contentWindow.document.title = title + ' ⍾ Waterbear result';
                 
                 if(!raw) {
                     code = 'html{' + code + '}';
                 }
                 
-                var prefixfree = !!Dabblet.settings.cached.prefixfree;
+                var prefixfree = !!Waterbear.settings.cached.prefixfree;
                 
                 style.textContent = prefixfree? StyleFix.fix(code, raw) : code;
             }
@@ -701,10 +704,10 @@ var Dabblet = {
             },
             
             prefixfree: function(enabled) {
-                Dabblet.settings.cached.prefixfree = enabled;
+                Waterbear.settings.cached.prefixfree = enabled;
                 
                 if(result.contentWindow.style) {
-                    Dabblet.update.CSS();
+                    Waterbear.update.CSS();
                 }
             }
         },
@@ -761,14 +764,14 @@ var Dabblet = {
                     switch(this.type) {
                         case 'radio':
                             if(this.checked) {
-                                Dabblet.settings.applyOne(name, this.value);
+                                Waterbear.settings.applyOne(name, this.value);
                             }
                             return;
                         case 'checkbox':
-                            Dabblet.settings.applyOne(name, this.checked? this.value : '');
+                            Waterbear.settings.applyOne(name, this.checked? this.value : '');
                             return;
                         default:
-                            Dabblet.settings.applyOne(name, this.value);
+                            Waterbear.settings.applyOne(name, this.value);
                             return;
                     }
                 }).call(input);
@@ -821,6 +824,7 @@ var Dabblet = {
 
 window.ACCESS_TOKEN = localStorage['access_token'];
 
+var currentuser = jQuery('#currentuser')[0];
 currentuser.onclick = function(){
     if(!this.hasAttribute('href')) {
         gist.oauth[0]();
@@ -839,54 +843,14 @@ window.onbeforeunload = function(){
     }
 };
 
-result.onload = function(){
-    if(!result.loaded 
-        && !result.contentWindow.document.body) {
-        setTimeout(arguments.callee, 100);
-        return;
-    }
-    
-    result.loaded = true;
-    
-    if(!result.contentDocument) {
-        result.contentDocument = result.contentWindow.document;
-    }
-    
-    result.contentWindow.style = $('style', result.contentDocument);
-    
-    result.contentDocument.onkeydown = document.onkeydown;
-    
-    html.onkeyup();
-    css.onkeyup();
-};
 
-// Fix Chrome bug
-setTimeout(function(){
-    if(!result.loaded) {
-        result.onload();
-    }
-}, 500);
 
 document.addEventListener('DOMContentLoaded', function() {
     if(ACCESS_TOKEN) {
         gist.getUser();
     }
-    
-    var a = $('h1 > a');
-    
-    if(parent !== window) {
-        document.body.setAttribute('data-embedded', '')
         
-        a.href = '';
-        a.target = '_blank';
-        a.title = 'Go to full page dabblet';
-    }
-    else {
-        a.onclick = Dabblet.wipe;
-        a.title = 'New dabblet';
-    }
-    
-    Dabblet.settings.apply();
+    Waterbear.settings.apply();
     
     var path = location.pathname.slice(1);
     
@@ -899,20 +863,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     if(!gist.id) {  
-        if(localStorage['dabblet.css'] !== undefined) {
-            css.textContent = localStorage['dabblet.css'];
+        if(localStorage['waterbear.json'] !== undefined) {
+            load_scripts_from_object(JSON.parse(localStorage['waterbear.json']).scripts);
         }
         
-        if(localStorage['dabblet.html'] !== undefined) {
-            html.textContent = localStorage['dabblet.html'];
-        }
         
         if(localStorage.settings) {
-            Dabblet.settings.apply(JSON.parse(localStorage.settings));
+            Waterbear.settings.apply(JSON.parse(localStorage.settings));
         }
     }
 });
 
+
+// FIXME: Convert this to waterbear events for undo
 $$('pre').forEach(function(pre){
     pre.undoManager = new UndoManager(pre);
     
@@ -935,13 +898,13 @@ $$('pre').forEach(function(pre){
                 break;
             case 9: // Tab
                 if(!cmdOrCtrl) {
-                    Dabblet.codeActions.call(this, 'indent', {
+                    Waterbear.codeActions.call(this, 'indent', {
                         inverse: evt.shiftKey
                     });
                     return false;
                 }
             case 13:
-                Dabblet.codeActions.call(this, 'newline');
+                Waterbear.codeActions.call(this, 'newline');
                 return false;
             case 90:
                 if(cmdOrCtrl) {
@@ -952,7 +915,7 @@ $$('pre').forEach(function(pre){
                 break;
             case 191:
                 if(cmdOrCtrl) {
-                    Dabblet.codeActions.call(this, 'comment');
+                    Waterbear.codeActions.call(this, 'comment');
                     return false;
                 }
                 
@@ -1055,12 +1018,12 @@ $$('pre').forEach(function(pre){
             }
             
             if(id === 'css') {
-                document.title = Dabblet.title(code) + ' ✿ dabblet.com';
+                document.title = Waterbear.title(code) + ' ⍾ waterbear.com';
             
-                Dabblet.update.CSS(code);
+                Waterbear.update.CSS(code);
             }
             else {
-                Dabblet.update.HTML(code);
+                Waterbear.update.HTML(code);
             }
             
             if(keyCode) {
@@ -1104,8 +1067,7 @@ $$('pre').forEach(function(pre){
     pre.onblur = function() {
         if(!gist.saved) {
             // Save draft
-            localStorage['dabblet.css'] = css.textContent;
-            localStorage['dabblet.html'] = html.textContent;
+            localStorage['waterbear.json'] = json.textContent;
         }
         
         self.Previewer && Previewer.hideAll();
@@ -1142,22 +1104,6 @@ $$('pre').forEach(function(pre){
     };
 });
 
-css.onfocus = function() {
-    script('/code/incrementable.js', function() {
-        new Incrementable(css, function(evt) {
-            if(evt.altKey) {
-                if(evt.shiftKey) { return 10; }
-                
-                if(evt.ctrlKey) { return .1; }
-                
-                return 1;
-            }
-            
-            return 0;
-        });
-        css.onfocus = null;
-    });
-};
 
 // Note: Has to be keydown to be able to cancel the event
 document.onkeydown = function(evt) {
@@ -1171,22 +1117,13 @@ document.onkeydown = function(evt) {
                 gist.save();
                 return false;
             case 'N':
-                if(Dabblet.wipe()) {
+                if(Waterbear.wipe()) {
                     location.pathname = '/';    
                 }
                 return false;
-            case '1':
-                var page = 'css';
-                break;
-            case '2':
-                var page = 'html';
-                break;
-            case '3':
-                var page = 'result';
-                break;
         }
         
-        var currentPage = Dabblet.settings.current('page');
+        var currentPage = Waterbear.settings.current('page');
         
         if(evt.shiftKey) {
             if(code === 219) {
@@ -1207,7 +1144,7 @@ document.onkeydown = function(evt) {
         
         if(page) {
             if(currentPage !== page) {
-                Dabblet.settings.apply('page', page);
+                Waterbear.settings.apply('page', page);
                 
                 evt.stopPropagation();
                 return false;
@@ -1234,7 +1171,7 @@ document.onkeydown = function(evt) {
 };
 
 // Pure CSS menus aren't accessible, we need to add some JS :(
-var header = $('header');
+var header = $_('header');
 $$('header a, header input, header button, header [tabindex="0"]').forEach(function(focusable){
     focusable.onfocus = function(){
         var ancestor = this;
