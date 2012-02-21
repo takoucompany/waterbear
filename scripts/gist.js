@@ -442,7 +442,7 @@ var Waterbear = {
     _title: '',
     title: function(code) {
         if (! this._title){
-            title = prompt('Title: ');
+            this._title = prompt('Title: ');
         }
         return this._title || 'Untitled';
         //return (code && code.match(/^\/\*[\s\*\r\n]+(.+?)($|\*\/)/m) || [,'Untitled'])[1];
