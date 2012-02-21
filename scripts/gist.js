@@ -38,6 +38,11 @@ function xhr(o) {
 function $_(expr, con) { return (con || document).querySelector(expr); }
 function $$(expr, con) { return [].slice.call((con || document).querySelectorAll(expr)); }
 
+// alpha and production have different client_ids
+// for saving as gists elsewhere (i.e., not on waterbearlang.com) register an application
+// with github: https://github.com/account/applications/new
+// You'll need to configure oauth.php on your server and replace the client id below
+var client_id = location.host.split('.') === 'alpha' ? 'ecaf8606df0e06eb468d' : '40090094550284b9dfa9';
 
 var gist = {
     oauth: [
@@ -46,7 +51,7 @@ var gist = {
             gist.oauth.callback = callback;
             
             var popup = open('https://github.com/login/oauth/authorize' + 
-                '?client_id=40090094550284b9dfa9' +
+                '?client_id=' + client_id +
                 '&scope=gist', 'popup', 'width=1015,height=500');
         },
         // Step 2: Get access token and store it
