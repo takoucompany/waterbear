@@ -42,7 +42,7 @@ function $$(expr, con) { return [].slice.call((con || document).querySelectorAll
 // for saving as gists elsewhere (i.e., not on waterbearlang.com) register an application
 // with github: https://github.com/account/applications/new
 // You'll need to configure oauth.php on your server and replace the client id below
-var client_id = location.host.split('.') === 'alpha' ? 'ecaf8606df0e06eb468d' : '40090094550284b9dfa9';
+var client_id = location.host.split('.')[0] === 'alpha' ? 'ecaf8606df0e06eb468d' : '40090094550284b9dfa9';
 
 var gist = {
     oauth: [
