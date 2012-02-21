@@ -115,9 +115,10 @@ var gist = {
                 currentuser.innerHTML = gist.getUserHTML(user);
                 currentuser.href = gist.getUserURL(user);
                 
-                window['save-button'].onclick = window['save-cmd'].onclick = gist.save;
-                window['save-cmd'].removeAttribute('data-disabled');
-                window['save-new-cmd'].removeAttribute('data-disabled');
+                // FIXME: Update for Waterbear UI
+                //window['save-button'].onclick = window['save-cmd'].onclick = gist.save;
+                //window['save-cmd'].removeAttribute('data-disabled');
+                //window['save-new-cmd'].removeAttribute('data-disabled');
                 
                 callback && callback();
             }
