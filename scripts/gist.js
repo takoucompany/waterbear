@@ -168,7 +168,7 @@ var gist = {
                 }
             },
             data: {
-                "description": title,
+                "description": Waterbear.title(),
                 "testattr": "Yes, I can add custom attributes",
                 "public": true,
                 "files": {
@@ -1005,7 +1005,7 @@ $$('pre').forEach(function(pre){
             }
             
             if(id === 'css') {
-                document.title = Waterbear.title(code) + ' ⍾ waterbear.com';
+                document.title = Waterbear.title() + ' ⍾ waterbear.com';
             
                 Waterbear.update.CSS(code);
             }
