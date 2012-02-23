@@ -174,7 +174,7 @@ var gist = {
                 "files": {
                     "waterbear.json": {
                         "content": JSON.stringify({
-                            "scripts": scripts_as_object()),
+                            "scripts": scripts_as_object(),
                             "title": Waterbear.title(),
                             "version": "0.4",
                             "plugin": Waterbear.plugin,
