@@ -173,12 +173,14 @@ var gist = {
                 "public": true,
                 "files": {
                     "waterbear.json": {
-                        "content": scripts_as_object(),
-                        "title": Waterbear.title(),
-                        "version": "0.4",
-                        "plugin": Waterbear.plugin,
-                        "type": "application/json",
-                        "format": "waterbear script"
+                        "content": JSON.stringify({
+                            "scripts": scripts_as_object()),
+                            "title": Waterbear.title(),
+                            "version": "0.4",
+                            "plugin": Waterbear.plugin,
+                            "type": "application/json",
+                            "format": "waterbear script"
+                        })
                     }
                 }
             }
