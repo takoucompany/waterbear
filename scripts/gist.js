@@ -133,6 +133,12 @@ var gist = {
         return 'https://gist.github.com/' + user.login;
     },
     
+    list: function(options){
+        // Example url: https://api.github.com/users/dethe/gists
+        // Open questions: can I add metadata to show which gists belong to waterbear?
+        // can I add metadata to show which plugin/language they are for?
+    },
+    
     save: function(options){
         options = options || {};
         
@@ -147,10 +153,7 @@ var gist = {
             return;
         }
         
-        var id = gist.id || '',
-            scripts = JSON.stringify(scripts_as_object()),
-            // FIXME: Replace with Waterbear title?
-            title = Waterbear.title(scripts);
+        var id = gist.id || '';
             
         gist.request({
             anon: options.anon,
@@ -166,14 +169,16 @@ var gist = {
             },
             data: {
                 "description": title,
+                "testattr": "Yes, I can add custom attributes",
                 "public": true,
                 "files": {
                     "waterbear.json": {
-                        "content": scripts
-                    },
-                    "settings.json": {
-                        // FIXME: Replace with Waterbear settings
-                        "content": JSON.stringify(Waterbear.settings.current(null, 'file'))
+                        "content": scripts_as_object(),
+                        "title": Waterbear.title(),
+                        "version": "0.4",
+                        "plugin": Waterbear.plugin,
+                        "type": "application/json",
+                        "format": "waterbear script"
                     }
                 }
             }
@@ -463,32 +468,7 @@ var Waterbear = {
     },
     
     update: {
-        CSS: function(code) {
-            if(!result.contentWindow.style) {
-                result.onload();
-            }
-            
-            var style = result.contentWindow.style;
-            
-            if(style) {
-                code = code || css.textContent;
-                
-                var title = Waterbear.title(code),
-                    raw = code.indexOf('{') > -1;
-            
-                result.contentWindow.document.title = title + ' ⍾ Waterbear result';
-                
-                if(!raw) {
-                    code = 'html{' + code + '}';
-                }
-                
-                var prefixfree = !!Waterbear.settings.cached.prefixfree;
-                
-                style.textContent = prefixfree? StyleFix.fix(code, raw) : code;
-            }
-        },
-        
-        HTML: function(code) {
+        JSON: function(code) {
             if(result.contentDocument.body) {
                 result.contentDocument.body.innerHTML = code;
             }
