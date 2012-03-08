@@ -837,17 +837,17 @@ var menus = {
         },
         {
             label: 'fill circle at point [point] with radius [number:10]',
-            script: 'local.ctx.beginPath();local.ctx.arc({{1}}.x,{{1}}.y,{{2}},0,Math.PI*2,true);local.ctx.closePath();ctx.fill();',
+            script: 'local.ctx.beginPath();local.ctx.arc({{1}}.x,{{1}}.y,{{2}},0,Math.PI*2,true);local.ctx.closePath();local.ctx.fill();',
             help: 'circle...'
         },
         {
             label: 'stroke circle at point [point] with radius [number:10]',
-            script: 'local.ctx.beginPath();local.ctx.arc({{1}}.x,{{1}}.y,{{2}},0,Math.PI*2,true);local.ctx.closePath();ctx.stroke();',
+            script: 'local.ctx.beginPath();local.ctx.arc({{1}}.x,{{1}}.y,{{2}},0,Math.PI*2,true);local.ctx.closePath();local.ctx.stroke();',
             help: 'circle...'
         },
         {
             label: 'stroke and fill circle at point [point] with radius [number:10]',
-            script: 'local.ctx.beginPath();local.ctx.arc({{1}}.x,{{1}}.y,{{2}},0,Math.PI*2,true);local.ctx.closePath();ctx.fill();ctx.stroke()',
+            script: 'local.ctx.beginPath();local.ctx.arc({{1}}.x,{{1}}.y,{{2}},0,Math.PI*2,true);local.ctx.closePath();local.ctx.fill();local.ctx.stroke()',
             help: 'circle...'
         },
         {
@@ -1231,7 +1231,7 @@ var menus = {
     point: menu('Point', [
         {
             label: 'point at x [number:0] y [number:0]',
-            script: '{x: {{1}}, y: {{2}}',
+            script: '{ x: {{1}}, y: {{2}} }',
             type: 'point'
         },
         {
