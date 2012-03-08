@@ -169,7 +169,6 @@ var gist = {
             },
             data: {
                 "description": Waterbear.title(),
-                "testattr": "Yes, I can add custom attributes",
                 "public": true,
                 "files": {
                     "waterbear.json": {
