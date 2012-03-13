@@ -72,7 +72,8 @@ Global.prototype.subscribe_mouse_events = function(){
     $('.stage').mousedown(function(evt){self.mouse_down = true;})
                .mousemove(function(evt){self.mouse_x = evt.pageX - stage_coord.left;
                                         self.mouse_y = evt.pageY - stage_coord.top;
-                                        console.log('moving mouse to %s,%s', self.mouse_x, self.mouse_y);});
+                                        //console.log('moving mouse to %s,%s', self.mouse_x, self.mouse_y);
+                });
     $(document.body).mouseup(function(evt){self.mouse_down = false;});
 };
 
