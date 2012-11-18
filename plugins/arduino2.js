@@ -193,14 +193,22 @@ $('.clear_scripts').click(clear_scripts_default);
 
 var menus = {
     control: menu('Control', [
+        //{
+        //    label: 'Setup - When program starts', 
+        //    trigger: true, 
+        //    script: 'void setup()\n{\n[[next]]\n}\n',
+        //    help: 'Start scripts when program starts'
+        //},
+
+
 
         {
             label: 'Lua main function ()', 
             trigger: true, 
             containers: 1, 
             slot: false, 
-            script: 'function kick()\n\n[[1]]\nend\n',
-            help: 'Trigger for main loop'
+            script: '\n----------------\n--function sToi is prepeared for act_module function \n\nfunction sToi(str_a)\n\tprint(str_a)\n\tptn1 = \":\"\n\tptn2 = \"[0-9,:]\"\n\tidx = 0\n\tstr_ar = \"\"\n\tans = string.find(str_a, ptn1)\n\tif (ans ~= nil) then\n\t\tfor str in string.gmatch(str_a,ptn2) do\n\t\t\tif idx < ans-1 then\n\t\t\t\tstr_ar = str_ar..str\n\t\t\telse\n\t\t\t\treturn str_ar\n\t\t\tend\n\t\t\tidx = idx + 1;\n\t\tend\n\telse\n\t\treturn str_ar\n\tend\n\treturn -1\nend\n\n----------------\n\nfunction kick()\n\n[[1]]\nend\n',
+            help: 'Trigger for function and need activate modules'
         },
 
 
@@ -213,172 +221,311 @@ var menus = {
 
 
 
+/*
         {
-            label: 'for loop : times [number:10]', 
+            label: 'Lua main function ()', 
+            trigger: true, 
+            containers: 1, 
+            slot: false, 
+            script: 'function kick()\n\n[[1]]\nend\n',
+            help: 'Trigger for main loop'
+        },
+*/
+
+        //{
+        //    label: 'Global Settings', 
+        //    trigger: true, 
+        //    script: '/*Global Settings*/\n\n[[next]]\n\n',
+        //    help: 'Trigger for blocks in global setup'
+        //},
+        //uniqe id?
+        //{
+        //    label: 'broadcast [string:ack] message', 
+        //    script: '{{1}}();',
+        //    help: 'Send a message to all listeners'
+        //},
+        //{
+        //    label: 'when I receive [string:ack] message', 
+        //    trigger: true, 
+        //    script: 'function {{1}}(){\n[[next]]\n}',
+        //    help: 'Trigger for blocks to run when message is received'
+        //},
+        {
+            label: 'while if [boolean]', 
             containers: 1, 
         //    slot: false, 
-            script: 'for forloop =1\, {{1}} do\n[[1]]\nend',
+            script: 'while {{1}} do \n[[1]]\nend',
             help: 'loop until condition fails'
         },
 
+
 	{
-          	label: 'break from loop',
+          	label: 'break from while',
 		slot: false,  
           	script: ' do\n break \n end',
-          	help: 'break command'
+          	help: 'Return value'
         },
 
 
 
         {
-            label: 'if [string:value = 10]', 
+            label: 'if [boolean]', 
             containers: 1, 
             script: 'if {{1}} then \n[[1]]\nend',
             help: 'only run blocks if condition is true'
         },
 
         {
-            label: 'if [string:value = 10]', 
+            label: 'if [boolean]', 
             containers: 2, 
             subContainerLabels: ['else'],
             script: 'if {{1}} then\n[[1]]\n else \n[[2]]\n end',
             help: 'run first set of blocks if condition is true, second set otherwise'
         },
-
-
-        {
-          	label:'[string:value] = [string:1 + 1 - 2 * 3 / 3]',
-          	script: "{{1}} = {{2}}",
-          	help: 'Change the value of an already created string variable'
-        },
-
-
+        //{
+        //    label: 'repeat until [boolean]', 
+        //    script: 'while(!({{1}})){\n[[1]]\n}',
+        //    help: 'loop until condition is true'
+        //}
     ], false),
     
     timing: menu('Timing', [
         {
             label: 'wait [number:1] secs', 
-            script: 'act_module(\"(500)\", \"(0)\",\"{{1}}\")',
+            script: 'actModule(500, math.floor\({{1}}\), 0)',
             help: 'pause before running subsequent blocks'
         },
-
-        {
-            label: 'wait [number:1] msecs', 
-//            script: 'act_module(\"(501)\", \"(0)\",math.floor\({{1}}\))',
-            script: 'act_module(\"(501)\", \"(0)\",\"{{1}}\")',
-            help: 'pause before running subsequent blocks'
-        },
-
+/*
+        //{
+        //    label: 'Milliseconds since program started', 
+        //    'type': 'int', 
+        //    script: '(millis())',
+        //    help: 'int value of time elapsed'
+        //},
+        //{
+        //    label: 'Seconds since program started', 
+        //    'type': 'int', 
+        //    script: '(int(millis()/1000))',
+        //    help: 'int value of time elapsed'
+        //}
+  */      
     ]),
     
     io: menu('Electronic Interface', [
-    //yk-------------------------------------
- 	{
-            label: 'act_Module  addr : [choice:module_addr] mode : [choice:module_mode] value : [string:0]', 
-            script: 'act_module(\"({{1}})\",\"({{2}})\", \"\"..({{3}})..\"\")',
-            help: 'Create a named pin set to input',
-            
+    /*    {
+            label: 'Create digital_output## on Pin [choice:digitalpins]', 
+            script: 'digital_output## = "{{1}}"; pinMode(digital_output##, OUTPUT);',
+            help: 'Create a named pin set to output',
+            returns: {
+                label: 'digital_output##',
+                script: 'digital_output##',
+                type: 'string'
+            }
         },
-
- 	{
-            label: 'get raw data [string:value]  = act_Module  addr : [choice:module_addr] mode : [choice:module_mode] value : [string:0]', 
-            script: '{{1}} = act_module(\"({{2}})\",\"({{3}})\", \"\"..({{4}})..\"\")',
-            help: 'Create a named pin set to input',
-            
-        },
-/*
+        
         {
-          	label:'value [string:value]',
-          	type : 'string',
-          	script: "\"..{{1}}..\"",
-          	help: 'Get the value of a string variable'
+          	label: 'Set Digital Pin [string] [choice:highlow]', 
+          	script: 'digitalWrite({{1}}, {{2}});',
+          	help: 'Write a value to given pin'
+        },
+        
+        {
+          	label: 'Digital Pin [string] ON if [boolean]', 
+          	script: 'if({{2}} == HIGH)\n{\ndigitalWrite({{1}}, HIGH);\n}\nelse\n{\ndigitalWrite({{1}}, LOW);\n}\n',
+          	help: 'Write a boolean value to given pin'
+        },
+        
+        {
+            label: 'Create digital_input## on Pin [choice:digitalpins]', 
+            script: 'digital_input## = "{{1}}"; pinMode(digital_input##, INPUT);',
+            help: 'Create a named pin set to input',
+            returns: {
+                label: 'digital_input##',
+                script: 'digital_input##',
+                type: 'string'
+            }
+        },
+        
+        {
+            label: 'Digital Pin [string]', 
+            //label: 'Is Pin [string] HIGH', 
+            'type': 'boolean', 
+            script: '(digitalRead({{1}}) == HIGH)',
+            help: 'Is the digital input pin ON'
+        },
+        
+        
+        {
+            label: 'Create analog_input## on Pin [choice:analoginpins] ', 
+            script: 'analog_input## = "{{1}}"; pinMode(analog_input##, INPUT);',
+            help: 'Create a named pin set to input',
         },
 */
-
 //yk-------------------------------------
-
-//yk-------------------------------------
-/* 	{
-            label: 'act_Module  addr : [choice:module_addr] mode : [choice:module_mode] value : [string:0]', 
-            'type': 'number', 
-            script: 'act_module(\"({{1}})\",\"({{2}})\", \"{{3}}\")',
+ 	{
+            label: 'act_Module  addr : [choice:module_addr] mode : [choice:module_mode] value : [number:0]', 
+            script: 'act_module( sToi (\"{{1}}\"), sToi (\"{{2}}\"), {{3}})',
             help: 'Create a named pin set to input',
             
         },
-*/
-
+//yk-------------------------------------
 
 //yk-------------------------------------
+ 	{
+            label: 'act_Module  addr : [choice:module_addr] mode : [choice:module_mode] value : [number:0]', 
+            'type': 'number', 
+            script: 'act_module( sToi (\"{{1}}\"), sToi (\"{{2}}\"), {{3}})',
+            help: 'Create a named pin set to input',
+            
+        },
+
+//yk-------------------------------------
+/*        
+        {
+            label: 'Analog Pin [string]', 
+            'type': 'int', 
+            script: '(analogRead({{1}}))',
+            help: 'Value of analog pin'
+        },
+        
+        {
+            label: 'Create analog_output## on Pin [choice:pwmpins]', 
+            script: 'analog_output## = "{{1}}"; pinMode(analog_output##, OUTPUT);',
+            help: 'Create a named pin set to output',
+            returns: {
+                label: 'analog_output##',
+                script: 'analog_output##',
+                type: 'string'
+            }
+        },
+        
+        {
+          	label: 'Analog [string] outputs [int:255]', 
+          	script: 'analogWrite({{1}}, {{2}});',
+          	help: 'Set value of a pwm pin'
+        }
+*/
     ]),
- /*   
+    
     variables: menu('Variables', [
         {
-          	label:'[string:value] = [string:1 + 2]',
+          	label:'[string:var] = [number]',
           	script: "{{1}} = {{2}}",
           	help: 'Change the value of an already created string variable'
         },
-
         {
-          	label:'value of [string:value]',
+          	label:'value of [string:var]',
           	type : 'number',
           	script: "{{1}}",
           	help: 'Get the value of a string variable'
         },
 
         {
-          	label:'value of [string:value]',
+          	label:'value of [string:var]',
           	type : 'boolean',
           	script: "{{1}}",
           	help: 'Get the value of a true or false variable'
         }
 
-
       ]),
-
-*/
-
-    print: menu('Print', [
-                
-
-
+    operators: menu('Operators', [
         {
-          	label: 'LCD print    <br>[any:Text]', 
-            script: 'act_module(\"(40:LCD)\",\"{{1}}\", \"1\")',
-            help: 'Send a message to LCD'
+            label: '[number:0] < [number:0]', 
+            'type': 'boolean', 
+            script: "({{1}} < {{2}})",
+            help: 'Check if one number is less than another'
         },
-
-
         {
-          	label: 'LCD clear', 
-            script: 'act_module(\"(40:LCD)\",\"(clear)\", \"2\")',
-            help: 'clear LCD'
+            label: '[number:0] = [number:0]', 
+            'type': 'boolean', 
+            script: "({{1}} == {{2}})",
+            help: 'Check if one number is equal to another'
         },
-
-
-
         
         {
-          	label: 'JTAG print <br>[any:Text]', 
+            label: '[number:0] > [number:0]', 
+            'type': 'boolean', 
+            script: "({{1}} > {{2}})",
+            help: 'Check if one number is greater than another'
+        },
+        {
+            label: '[boolean:true] and [boolean:true]', 
+            'type': 'boolean', 
+            script: "({{1}} and {{2}})",
+            help: 'Check if both are true'
+        },
+        {
+            label: '[boolean:true] or [boolean:true]', 
+            'type': 'boolean', 
+            script: "({{1}} or {{2}})",
+            help: 'Check if one is true'
+        },
+        {
+            label: 'not [boolean]', 
+            'type': 'boolean', 
+            script: "(! {{1}})",
+            help: 'Not true is false and Not false is true'
+        },
+        {
+            label: '[number:0] mod [number:0]', 
+            'type': 'number', 
+            script: "({{1}} % {{2}})",
+            help: 'Gives the remainder from the division of these two number'
+        },
+    ]),
+    print: menu('Print', [
+        
+        {
+          	label: 'print <br>[any:Message] as a line', 
           	script: "print(\"{{1}}\\n\")",
             help: 'Send a message over the serial connection followed by a line return'
         },
 
         {
-            label: 'Chani text<br>[string:text] .. [string:value]<br><br> .. [any:text]', 
-            'type': 'any', 
+            label: 'Chani text<br>[string:text]<br><br> .. [number:0]<br><br> .. [string:]', 
+            'type': 'string', 
             script: "\"..\"{{1}}\" .. {{2}}..\"{{3}}\"..\"",
             help: 'Check if one number is equal to another'
         },
 
+
+
         {
-            label: 'Value to Text[string:value]', 
-            'type': 'any', 
-            script: "\"..\"({{1}})\"..\"",
-            help: 'Check if one number is equal to another'
+          	label:'print [any:Message] : show value [number:0]',
+          	script: "print(\"{{1}} : \"..\({{2}}\)..\"\\n\")",
+          	help: 'Change the value of an already created string variable'
+        },
+
+	{
+          	label: 'Card data name:[string:Card_name] ,<br>data <br>[data:DATA]', 
+          	script: "{{1}} =\{{{2}}\}",
+          help: 'Preparing for writing text or values to file, and close it.'
+        },
+
+        {
+            label: '[string:Data_Name]<br><br> = [number:0]', 
+            'type': 'data', 
+            script: "{{1}} = {{2}}",
+            help: 'Check if one number is less than another'
+        },
+
+        {
+            label: '=chain data<br>[number:0],<br><hr><br>[string:Data_Name] <br><br>= [number:0]', 
+            'type': 'number', 
+            script: "{{1}}, {{2}} = {{3}}",
+            help: 'Check if one number is less than another'
         },
 
 
 
+/*
+        {
+          	label: 'Message Value', 
+          	type: 'string',
+          	script: "Serial.read()",
+          	help: 'Read a message from the serial connection'
+        },
+*/
     ]),
 
 
@@ -386,35 +533,37 @@ var menus = {
 
 
         {
-          	label:'SAVE filename:[string:file.txt] <br>Add Line:[any:Text]',
-          	script: "act_module(\"(600)\",\"/home/httpd/{{1}}\",\"{{2}}\\n\")",
+          	label: 'File for add aline<br><br> ID:[string:WFile1]  File Name:[string:WFile.txt]', 
+          containers: 1, 
+          	script: "{{1}}, {{1}}msg = io.open(\"/mut/{{2}}\",\"a\")\n[[1]]\n{{1}}:close()",
+          help: 'Preparing for writing text or values to file, and close it.'
+        },
+
+        {
+          	label:'Write Text to ID:[string:WFile1] <br>TEXT:[string:LineText]',
+          	script: "if({{1}}) then\n{{1}}:write(\"{{2}}\\n\")\nelse\nprint({{1}}msg)\nend",
           	help: 'Writing text or values to file.'
         },
 
-/*
-        {
-          	label:'Use only Red Brock in this box<br>SAVE filename:[string:file.txt]', 
-	          containers: 1, 
-         		script: "act_module(\"(600)\",\"/home/httpd/{{1}}\",\"[[1]]\")",          			help: 'Use only Red Brock in this box.'
-        },
 
         {
-          	label:'text line:[any:text]', 
-		script: "\"..\"{{1}}\\n\"..\"",
-		help: 'Writing text or values to file.'
-        },
-*/
-        {
-            label: 'Chani text<br>[string:text1] .. [string:value]<br><br> .. [any:text2]', 
-            'type': 'any', 
-            script: "\"..\"{{1}}\".. ({{2}})..\"{{3}}\"..\"",
+            label: 'Chani text<br>[string:text]<br><br> .. [number:0]<br><br> .. [string:]', 
+            'type': 'string', 
+            script: "\"..\"{{1}}\" .. {{2}}..\"{{3}}\"..\"",
             help: 'Check if one number is equal to another'
         },
 
         {
-          	label:'Delete filename:[string:file.txt]',
-          	script: "act_module(\"(601)\",\"/home/httpd/{{1}}\",\"0\")",
-          	help: 'Write file name.'
+          	label: 'File for read a line<br>ID:[string:RFile1]  File name:[string:RFile.txt]', 
+          containers: 1, 
+          	script: "{{1}}, {{1}}msg = io.open(\"/mut/{{2}}\",\"r\")\n[[1]]\n{{1}}:close()",
+          help: 'Preparing for reading text or values from file, and close it.'
+        },
+
+        {
+          	label:'Read a line from ID:[string:RFile1]  <br>to:[string:Line]',
+          	script: "if({{1}}) then\n{{2}} = {{1}}:read(\"*l\")\nelse\nprint({{1}}msg)\nend",
+          	help: 'Reading text or values from file.'
         },
 
     ]),
@@ -423,33 +572,11 @@ var menus = {
     math: menu('Math', [
 
         {
-          	label:'[string:value] = [number:set math brock]',
-          	script: "{{1}} = {{2}}",
-          	help: 'Change the value of an already created string variable'
-        },
-
-
-        {
-            label: '[string:value]', 
-            'type': 'number', 
-            script: "{{1}}",
-            help: 'You can write simple value'
-        },
-
-        {
-            label: 'raw data to mV [number:0]mV', 
-            'type': 'number', 
-            script: "({{1}} * (3300 / 4095))",
-            help: 'change value to voltage'
-        },
-
-        {
             label: '[number:0] + [number:0]', 
             'type': 'number', 
             script: "({{1}} + {{2}})",
             help: 'Add two numbers'
         },
-
         {
             label: '[number:0] - [number:0]', 
             'type': 'number', 
@@ -488,7 +615,7 @@ var menus = {
         },
 
         {
-            label: 'absolute of [number: -10]', 
+            label: 'absolute of [number:10]', 
             'type': 'number', 
             script: "(math.abs({{1}}))",
             help: 'Gives the positive of the number'
@@ -534,6 +661,14 @@ var menus = {
 
 
 
+/*
+        {
+          	label: 'Message Value', 
+          	type: 'string',
+          	script: "Serial.read()",
+          	help: 'Read a message from the serial connection'
+        },
+*/
     ])
 
 

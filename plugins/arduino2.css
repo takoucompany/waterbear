@@ -27,9 +27,6 @@
 .operators{ border-color: hsl(93,90%,66%); }
 .operators > .block{ background-color: hsl(93,90%,76%); }
 
-.table{ border-color: hsl(240, 100%, 80%); }
-.table > .block {background-color: hsl(240, 100%, 80%); }
-
 .print{ border-color: #e66a22; }
 .print > .block{ background-color: #e66a22; }
 
