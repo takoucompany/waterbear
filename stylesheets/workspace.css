@@ -43,9 +43,8 @@ body {
     height: 100%;
 }
 
-.tab_bar button, .tab_bar a{
+.tab_bar button{
     float: right;
-    width: 14%;
 }
 
 
@@ -56,6 +55,7 @@ body {
     width: 34.8%;
     height: 95%;
     background-color: #FFF;
+    border: 1px solid #CCC;
     overflow-x: hidden;
     overflow-y: auto; 
 }
@@ -80,6 +80,7 @@ body {
 .tab_bar{
     position: absolute;
     left: 15%;
+    top: 6px;
     width: 34.8%;
     z-index: 15;
 }
@@ -124,6 +125,7 @@ body {
     width: 49.8%;
     bottom: -20px;
     background-color: #FFF;
+    border: 1px solid #CCC;
 }
 
 #block_menu{
@@ -185,6 +187,10 @@ body {
 .description{
     font-size: .8em;
     color: #515151;
+}
+/* This function isn't really needed with the left align system. */
+.layout_blocks{
+    display: none;
 }
 
 /* Save/Restore Dialogs */
